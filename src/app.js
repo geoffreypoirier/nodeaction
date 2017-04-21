@@ -3,10 +3,16 @@
  */
 
 let express = require('express');
+let bodyParser = require('body-parser');
+
+let index = require('./routes/index');
 
 let app = express();
 
-let index = require('./routes/index');
+
+// use bodyParser for the rendering engine
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({'extended':'false'}));
 
 
 //
