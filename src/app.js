@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({'extended': 'false'}));
 
 
-//
+// routing
 app.use('/', index);
 
 
