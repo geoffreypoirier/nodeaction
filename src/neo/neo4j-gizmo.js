@@ -16,12 +16,15 @@
  */
 
 
+
+/*
+ Note on lack of DB names: Which ever Community Edition
+ is currently running will be the one interacted with.
+ */
+
+
 let _     = require('lodash');
 let neo4j = require('neo4j-driver').v1;
-
-
-// ?db not referenced by name?
-//let dbName = 'early-test.graphdb';
 
 
 // move proper UN/PW to Environment vars or config file
@@ -41,69 +44,72 @@ driver.onError = function (error) {
 };
 
 
-/**
- * Pre-seed the db with 100k IPs and Domains with random connections.
- */
-let seeds               = [];
-let numberOfSeeds       = 100000;
-let numberOfConnections = 10;
+const seedDb = function () {
+  /**
+   * Pre-seed the db with 100k IPs and Domains with random connections.
+   */
+  let seeds               = [];
+  let numberOfSeeds       = 100000;
+  let numberOfConnections = 10;
 
 
-let randomIp = function () {
-  return Math.floor(Math.random() * 255);
-};
+  let randomIp = function () {
+    return Math.floor(Math.random() * 255);
+  };
 
-let generateRandomIp = function () {
-  let result = '' + randomIp() + '.' + randomIp() + '.' + randomIp();
+  let generateRandomIp = function () {
+    let result = '' + randomIp() + '.' + randomIp() + '.' + randomIp();
 
-  // check for dupe
-  if (_.includes(seeds, {'address': result})) {
-    console.log('Wow! Dupe found.', seeds.length);
-    return generateRandomIp();
-  } else {
+    // check for dupe
+    if (_.includes(seeds, {'address': result})) {
+      console.log('Wow! Dupe found.', seeds.length);
+      return generateRandomIp();
+    } else {
+      return result;
+    }
+
+  };
+
+
+  let generateRandomConnections = function () {
+
+    let result = [];
+
+    for (let connectionsCounter = 0; connectionsCounter < numberOfConnections; connectionsCounter++) {
+      let randomIndex       = Math.floor(Math.random() * seeds.length);
+      let connectionAddress = seeds[randomIndex].address;
+      result.push(connectionAddress);
+    }
+
     return result;
+
+  };
+
+
+  for (let seedCounter = 0; seedCounter < numberOfSeeds; seedCounter++) {
+    let seed         = {};
+    seed.address     = generateRandomIp();
+    seed.connections = [];
+
+    // does not check for self reference or dupes
+    if (seedCounter > (numberOfConnections * 25)) {
+      seed.connections = generateRandomConnections();
+    }
+
+    seeds.push(seed);
+
+
+    // mini report
+    if ((seedCounter > 0) && (seedCounter % 10000 === 0)) {
+      console.log('mini report:', seedCounter, seed.address, seed.connections.toString());
+    }
+
   }
 
 };
 
 
-let generateRandomConnections = function () {
-
-  let result = [];
-
-  for (let connectionsCounter = 0; connectionsCounter < numberOfConnections; connectionsCounter++) {
-    let randomIndex       = Math.floor(Math.random() * seeds.length);
-    let connectionAddress = seeds[randomIndex].address;
-    result.push(connectionAddress);
-  }
-
-  return result;
-
-};
-
-
-for (let seedCounter = 0; seedCounter < numberOfSeeds; seedCounter++) {
-  let seed         = {};
-  seed.address     = generateRandomIp();
-  seed.connections = [];
-
-  // note: does not check for self reference or dupes
-  if (seedCounter > (numberOfConnections * 25)) {
-    seed.connections = generateRandomConnections();
-  }
-
-  seeds.push(seed);
-
-
-  // mini report
-  if ((seedCounter > 0) && (seedCounter % 1000 === 0)) {
-    console.log('mini report:', seedCounter, seed.address, seed.connections.toString());
-  }
-
-}
-
-
-// set up a *streaming* session for hitting Neo4j db
+// set up a streaming session for hitting Neo4j db
 let session = driver.session();
 
 session
