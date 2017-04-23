@@ -44,10 +44,9 @@ driver.onError = function (error) {
 /**
  * Pre-seed the db with 100k IPs and Domains with random connections.
  */
-let seeds                 = [];
-let numberOfSeeds         = 100000;
-let numberOfRelationships = 10;
-let relationshipName      = 'CONNECTS_TO';
+let seeds               = [];
+let numberOfSeeds       = 100000;
+let numberOfConnections = 10;
 
 
 let randomIp = function () {
@@ -68,20 +67,37 @@ let generateRandomIp = function () {
 };
 
 
-let generateRandomConnections = function() {
+let generateRandomConnections = function () {
 
-  // check for dupe
+  let result = [];
+
+  for (let connectionsCounter = 0; connectionsCounter < numberOfConnections; connectionsCounter++) {
+    let randomIndex       = Math.floor(Math.random() * seeds.length);
+    let connectionAddress = seeds[randomIndex].address;
+    result.push(connectionAddress);
+  }
+
+  return result;
 
 };
 
 
-
 for (let seedCounter = 0; seedCounter < numberOfSeeds; seedCounter++) {
-  let seed     = {};
-  seed.address = generateRandomIp();
+  let seed         = {};
+  seed.address     = generateRandomIp();
+  seed.connections = [];
 
-  if (seedCounter > numberOfRelationships) {
+  // note: does not check for self reference or dupes
+  if (seedCounter > (numberOfConnections * 25)) {
+    seed.connections = generateRandomConnections();
+  }
 
+  seeds.push(seed);
+
+
+  // mini report
+  if ((seedCounter > 0) && (seedCounter % 1000 === 0)) {
+    console.log('mini report:', seedCounter, seed.address, seed.connections.toString());
   }
 
 }
