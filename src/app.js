@@ -40,4 +40,8 @@ app.use((err, req, res, next) => {
 });
 
 
+// test drive the neo4j-gizmo
+let gizmo = require('./neo/neo4j-gizmo');
+
+
 module.exports = app;
