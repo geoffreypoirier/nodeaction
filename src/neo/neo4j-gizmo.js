@@ -33,7 +33,22 @@ driver.onError = function (error) {
 };
 
 
-// set up a *streaming* "session" for hitting Neo4j db
+/**
+ * Write a script to preload Neo4J with 100k random IPs and Domains
+ * with random connections to each other
+ */
+
+
+/**
+ * NOTE: watch for integers
+ *  - example:
+ *    session.run("CREATE (n {age: {myIntParam}})", {myIntParam: neo4j.int(22)});
+ */
+
+
+
+
+// set up a *streaming* session for hitting Neo4j db
 let session = driver.session();
 
 session
@@ -61,7 +76,7 @@ session
 
 // The `Promise` way. (working example)
 //session
-//.run('CREATE (p:Person {name:\'Chesterfield\'})')
+//.run('MERGE (p:Person {name:{nameParam}}) RETURN p', {nameParam: 'Chesterfield'})
 //.then(() => {
 //  return session.run('MATCH (p:Person) WHERE toLower(p.name) CONTAINS toLower({name}) RETURN p', {name: 'charlie'})
 //})
