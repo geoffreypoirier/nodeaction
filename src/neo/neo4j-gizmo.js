@@ -9,6 +9,14 @@
  */
 
 
+/*
+ NOTES
+ 1) Watch for integers with neo4j.
+ - example: session.run("CREATE (n {age: {myIntParam}})", {myIntParam: neo4j.int(22)});
+ */
+
+
+let _     = require('lodash');
 let neo4j = require('neo4j-driver').v1;
 
 
@@ -34,18 +42,49 @@ driver.onError = function (error) {
 
 
 /**
- * Write a script to preload Neo4J with 100k random IPs and Domains
- * with random connections to each other
+ * Pre-seed the db with 100k IPs and Domains with random connections.
  */
+let seeds                 = [];
+let numberOfSeeds         = 100000;
+let numberOfRelationships = 10;
+let relationshipName      = 'CONNECTS_TO';
 
 
-/**
- * NOTE: watch for integers
- *  - example:
- *    session.run("CREATE (n {age: {myIntParam}})", {myIntParam: neo4j.int(22)});
- */
+let randomIp = function () {
+  return Math.floor(Math.random() * 255);
+};
+
+let generateRandomIp = function () {
+  let result = '' + randomIp() + '.' + randomIp() + '.' + randomIp();
+
+  // check for dupe
+  if (_.includes(seeds, {'address': result})) {
+    console.log('Wow! Dupe found.', seeds.length);
+    return generateRandomIp();
+  } else {
+    return result;
+  }
+
+};
 
 
+let generateRandomConnections = function() {
+
+  // check for dupe
+
+};
+
+
+
+for (let seedCounter = 0; seedCounter < numberOfSeeds; seedCounter++) {
+  let seed     = {};
+  seed.address = generateRandomIp();
+
+  if (seedCounter > numberOfRelationships) {
+
+  }
+
+}
 
 
 // set up a *streaming* session for hitting Neo4j db
