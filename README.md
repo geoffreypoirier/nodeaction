@@ -1,3 +1,17 @@
+
+
+
+
+### Random Add and Remove Records
+`node ./src/neo/neo-db-randomizer.js`
+
+### Seed the DB with 100k Records
+`node ./src/neo/neo-db-seeder.js`
+
+
+
+---
+
 # Nodeaction
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0.
