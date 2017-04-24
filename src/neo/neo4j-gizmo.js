@@ -1,25 +1,16 @@
 /**
  * Created by geoffrey on 4/22/17.
  *
- * Best source of info so far: https://www.npmjs.com/package/neo4j-driver.
- *  - has a subscription example
+ * - Best source of info so far: https://www.npmjs.com/package/neo4j-driver.
+ * - Example here not so dreamy: https://neo4j.com/developer/javascript/
  *
- * Example here not so dreamy: https://neo4j.com/developer/javascript/
- *
+ * - Which ever Community Edition db is currently running will be the one interacted with.
  */
 
-
 /*
- NOTES
- 1) Watch for integers with neo4j.
- - example: session.run("CREATE (n {age: {myIntParam}})", {myIntParam: neo4j.int(22)});
- */
-
-
-
-/*
- Note on lack of DB names: Which ever Community Edition
- is currently running will be the one interacted with.
+  NOTES
+  1) Watch for integers with neo4j.
+    - example: session.run("CREATE (n {age: {myIntParam}})", {myIntParam: neo4j.int(22)});
  */
 
 
@@ -107,6 +98,47 @@ const seedDb = function () {
   }
 
 };
+
+
+// TODO - check for qty in db, if < 100k seedDB()
+seedDb();
+
+
+
+/*
+Posted question:
+http://stackoverflow.com/questions/43590633/unwind-with-child-unwind-producing-wrong-nodes-and-relationships
+
+I want this Cypher query to work.
+
+`UNWIND connections AS connection` produces the right result,
+connection is correct, though MERGE, MATCH, UNWIND, FOREACH
+below it generates the wrong results.
+
+13 nodes appear — should be 7 — and the new ones have
+no { address } property.
+
+```
+ WITH [{address: "1", connections: []},
+ {address: "2",connections: ["1"]},
+ {address: "3",connections: ["1", "2"]},
+ {address: "4",connections: ["1", "2", "3"]},
+ {address: "5",connections: ["1", "2", "3", "4"]},
+ {address: "6",connections: ["1", "2", "3", "4", "5"]},
+ {address: "7",connections: ["1", "2", "3", "4", "5", "6"]}] AS seeds
+ UNWIND seeds AS seed
+ MERGE (source:Address { address: seed.address })
+
+ WITH seed.connections AS connections
+ UNWIND connections AS connection
+ MATCH (target:Address) WHERE target.address = connection
+
+ MERGE (source)-[:CONNECTS_TO]->(target)
+```
+
+I tried a dozen variations with no success.
+ */
+
 
 
 // set up a streaming session for hitting Neo4j db
