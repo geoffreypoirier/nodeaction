@@ -78,7 +78,12 @@ let seedDb = function () {
     .subscribe({
 
       onNext: (record) => {
-        console.log('record._fields:', record._fields);
+
+        // mini report
+        if ((seeds.length % 10000 === 0)) {
+          console.log('seeds remaining:', seeds.length, ' - record._fields:', record._fields);
+        }
+
       },
 
       onCompleted: () => {
