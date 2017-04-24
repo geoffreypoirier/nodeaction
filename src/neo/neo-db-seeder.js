@@ -15,6 +15,7 @@ let driver = neo4j.driver('bolt://localhost/', neo4j.auth.basic(un, pw));
 
 driver.onCompleted = function () {
   console.log('Driver working.');
+  console.log('Seeding DB. Appx 1 hour on MBP.');
 };
 
 driver.onError = function (error) {
@@ -23,12 +24,13 @@ driver.onError = function (error) {
 
 
 /**
- * Pre-seed the db with 100k IPs.
+ * Pre-seed the db with 100k IPs and connections.
  */
 let seeds         = [];
 let generateSeeds = function () {
 
-  let numberOfSeeds       = 100000;
+  let numberOfSeeds       = 110000;  // + 10%
+  let numberOfConnections = 3;
 
   let randomIp = function () {
     return Math.floor(Math.random() * 255);
@@ -47,10 +49,30 @@ let generateSeeds = function () {
 
   };
 
+  let generateRandomConnections = function () {
+
+    let result = [];
+
+    for (let connectionsCounter = 0; connectionsCounter < numberOfConnections; connectionsCounter++) {
+      let randomIndex       = Math.floor(Math.random() * seeds.length);
+      let connectionAddress = seeds[randomIndex].address;
+      result.push(connectionAddress);
+    }
+
+    return result;
+
+  };
+
 
   for (let seedCounter = 0; seedCounter < numberOfSeeds; seedCounter++) {
-    let seed     = {};
-    seed.address = generateRandomIp();
+    let seed         = {};
+    seed.address     = generateRandomIp();
+    seed.connections = [];
+
+    // does not check for self reference or dupes
+    if (seedCounter > (numberOfConnections * 25)) {
+      seed.connections = generateRandomConnections();
+    }
 
     seeds.push(seed);
 
@@ -65,36 +87,48 @@ let generateSeeds = function () {
 generateSeeds();
 
 
+let queryString = 'WITH {_seeds} AS seeds';
+queryString += ' UNWIND seeds as seed';
+queryString += ' MERGE (source:Address { address: seed.address })';
+
+queryString += ' WITH source, seed.connections AS connections';
+queryString += ' UNWIND connections AS connection';
+queryString += ' MATCH (target:Address) WHERE target.address = connection';
+
+queryString += ' MERGE (source)-[:CONNECTS_TO]->(target)';
+
 let seedDb = function () {
-// set up a streaming session for hitting Neo4j db
+
+  // set up a streaming session for hitting Neo4j db
   let session = driver.session();
 
-  let address = seeds[0].address;
+  // break into 1k chunks because throwing 100k at it looked like too much at one time
+  let _seeds = seeds.slice(0, 1000);
 
   session
 
-    .run('MERGE (a:Address {address:{addressParam}}) RETURN a', {addressParam: address})
+    .run(queryString, {_seeds})
 
     .subscribe({
 
       onNext: (record) => {
 
-        // mini report
-        if ((seeds.length % 10000 === 0)) {
-          console.log('seeds remaining:', seeds.length, ' - record._fields:', record._fields);
-        }
+        console.log('seeds remaining:', seeds.length, ' - record._fields:', record._fields);
 
       },
 
       onCompleted: () => {
 
-        seeds.shift();
+        seeds = _.slice(seeds, 1000);
 
         if (seeds.length > 0) {
           seedDb();
         } else {
           session.close();
           driver.close();   // ?best place for this?
+
+          console.log('seeding complete');
+
         }
 
       },
