@@ -15,7 +15,7 @@ let driver = neo4j.driver('bolt://localhost/', neo4j.auth.basic(un, pw));
 
 driver.onCompleted = function () {
   console.log('Driver working.');
-  console.log('Seeding DB. Appx 2 hours on MBP.');
+  console.log('Seeding DB. Takes a while. Hours on MBP.');
 };
 
 driver.onError = function (error) {
