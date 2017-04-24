@@ -1,6 +1,8 @@
 /**
  * Created by geoffrey on 4/24/17.
  */
+
+
 let neo4j = require('neo4j-driver').v1;
 
 // move proper UN/PW to Environment vars or config file
@@ -36,8 +38,8 @@ let generateRandomIp = function () {
 /**
  * Generate Query Strings
  */
-let genQueryString_getRandomNode = function () {
-  return 'MATCH (a:Address) WHERE a.address CONTAINS \'' + randomIp() + '\' RETURN a LIMIT 100';
+let genQueryString_getRandomNodes = function (limit) {
+  return 'MATCH (a:Address) WHERE a.address CONTAINS \'' + randomIp() + '\' RETURN a LIMIT ' + limit;
 };
 
 let genQueryString_addNodes = function () {
@@ -51,6 +53,14 @@ let genQueryString_addNodes = function () {
 
   queryString += ' MERGE (source)-[:CONNECTS_TO]->(target)';
 
+  return queryString;
+};
+
+let genQueryString_deleteNodes = function () {
+  let queryString = 'WITH {_targets} AS targets';
+  queryString += ' UNWIND targets AS target';
+  queryString += ' MATCH (a:Address { address: target })';
+  queryString += ' DETACH DELETE a';
   return queryString;
 };
 
@@ -93,13 +103,13 @@ let generateSeeds = function (addresses) {
  * add some random nodes - 10 at a time with 3 connections each
  */
 
-let randomAddNodes = function () {
+let addRandomNodes = function () {
   let session = driver.session();
 
   session
 
   // get random nodes
-    .run(genQueryString_getRandomNode())
+    .run(genQueryString_getRandomNodes(100))
 
 
     // generate some seeds with connections from the results
@@ -123,6 +133,9 @@ let randomAddNodes = function () {
 
     .then((result) => {
       console.log(result);
+
+      session.close();
+
     })
 
 
@@ -131,4 +144,54 @@ let randomAddNodes = function () {
     })
 };
 
-randomAddNodes();
+
+/**
+ * Delete some nodes.
+ */
+
+let deleteRandomNodes = function () {
+  let session = driver.session();
+
+  session
+
+  // get random nodes
+    .run(genQueryString_getRandomNodes(5))
+
+
+    // organize nodes to delete
+    .then((result) => {
+
+      let _targets = [];
+
+      result.records.forEach(function (record) {
+        _targets.push(record._fields[0].properties.address);
+      });
+
+      return session.run(genQueryString_deleteNodes(), {_targets})
+
+    })
+
+
+    .then((result) => {
+      console.log(result);
+
+      session.close();
+
+    })
+
+
+    .catch((error) => {
+      console.log('error:', error);
+    })
+};
+
+
+/**
+ * Timers to add and remove nodes.
+ */
+
+// every 5 seconds add 10 new random nodes
+setInterval(addRandomNodes, 5000);
+
+// every 10 seconds delete 5 random nodes
+setInterval(deleteRandomNodes, 10000);
