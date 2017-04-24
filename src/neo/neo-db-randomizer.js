@@ -1,5 +1,10 @@
 /**
  * Created by geoffrey on 4/24/17.
+ *
+ * IMPROVEMENTS
+ *
+ * 1) better console logging
+ *
  */
 
 
