@@ -40,8 +40,4 @@ app.use((err, req, res, next) => {
 });
 
 
-// seed db
-let seeder = require('./neo/neo-db-seeder');
-
-
 module.exports = app;
