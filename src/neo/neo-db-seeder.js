@@ -1,5 +1,15 @@
 /**
  * Created by geoffrey on 4/24/17.
+ *
+ * IMPROVEMENTS
+ *
+ * 1) query db for existing records via
+ *  `MATCH (n:Address) RETURN count(n)`
+ *
+ * 2) set numberOfSeeds with this
+ *
+ * 3) separate this job in its own
+ *
  */
 
 let _     = require('lodash');
@@ -29,7 +39,7 @@ driver.onError = function (error) {
 let seeds         = [];
 let generateSeeds = function () {
 
-  let numberOfSeeds       = 110000;  // + 10%
+  let numberOfSeeds       = 101000;  // + 1%
   let numberOfConnections = 3;
 
   let randomIp = function () {
