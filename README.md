@@ -2,8 +2,14 @@
 
 
 
-### Random Add and Remove Records
-`node ./src/neo/neo-db-randomizer.js`
+### Random Add and Remove Nodes
+
+1) Every 5 seconds add 10 new random nodes with connections are added.
+2) Every 10 seconds delete 5 random nodes and relationships.
+
+run: `node ./src/neo/neo-db-randomizer.js`
+
+
 
 ### Seed the DB with 100k Records
 `node ./src/neo/neo-db-seeder.js`
