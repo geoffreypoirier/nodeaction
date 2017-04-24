@@ -4,15 +4,57 @@
 
 let express    = require('express');
 let bodyParser = require('body-parser');
+let argv       = require('minimist')(process.argv.slice(2));
 
 let index = require('./routes/index');
 
-let app = express();
+let app     = express();
+let subpath = express();
 
 
 // use bodyParser for the rendering engine
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({'extended': 'false'}));
+//app.use(bodyParser.urlencoded({'extended': 'false'}));
+
+app.use(bodyParser());
+app.use('/v1', subpath);
+
+
+// swagger
+let swagger = require('swagger-node-express').createNew(subpath);
+app.use(express.static('dist'));
+
+swagger.setApiInfo({
+  title            : 'example api',
+  description      : 'example desc',
+  termsOfServiceUrl: '',
+  contact          : 'g@example.com',
+  license          : '',
+  licenseUrl       : ''
+});
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname, '/dist/index.html');
+});
+
+swagger.configureSwaggerPaths('', 'api-docs', '');
+
+let domain = 'localhost';
+argv.domain !== undefined ? domain = argv.domain : console.log('no domain specified, using localhost');
+
+let port = '8080';
+argv.port !== undefined ? port = argv.port : console.log('no port specified, using 8080');
+
+let applicationUrl = 'http://' + domain + ':' + port;
+console.log('api running on', applicationUrl);
+
+swagger.configure(applicationUrl, '1.0.0');
+
+app.listen(port);
+
+
+// example swagger spec pulled from
+// https://github.com/shawngong/Swagger-Node-Express-For-Existing-APIs/blob/master/sample-spec.json
+
 
 
 // routing
