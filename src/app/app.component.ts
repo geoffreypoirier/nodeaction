@@ -16,6 +16,25 @@ export class AppComponent {
   showLegend = false;
   legendTitle = 'dummy data';
 
+  nodes: any = [
+    {
+      "value": "111.222.111"
+    },
+    {
+      "value": "122.211.122"
+    },
+    {
+      "value": "133.133.133"
+    }
+  ];
+
+  links: any = [{
+    source: '111.222.111', target: '122.211.122'
+  }];
+
+  constructor() {
+  }
+
 
   handleClick_getData(): void {
     console.log('clicked');
