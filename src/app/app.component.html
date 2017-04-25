@@ -1,23 +1,67 @@
-<h1>
-  {{title}}
-</h1>
+<div class="app">
 
-<!-- some dummy content to make sure this works -->
-<md-card>
+  <md-toolbar class="app-header-toolbar">
+    <h3>nodeaction</h3>
+  </md-toolbar>
 
-  <md-card-header>
-    <md-card-title>Test Card Title</md-card-title>
-    <md-card-subtitle>test card subtitle</md-card-subtitle>
-  </md-card-header>
+  <div class="workspace">
 
-  <md-card-content>
-    Some test content.
-  </md-card-content>
+    <md-card class="input-card">
 
-  <md-card-actions>
-    <button md-fab color="primary">
-      <md-icon>motorcycle</md-icon>
-    </button>
-  </md-card-actions>
+      <md-input-container>
+        <input mdInput name="depthInput"
+               placeholder="depth" maxlength="2" type="number"
+               [(ngModel)]="depth"/>
+      </md-input-container>
 
-</md-card>
+      <md-card-actions>
+        <button md-raised-button (click)="handleClick_getData()">Go.</button>
+      </md-card-actions>
+
+    </md-card>
+
+    <md-card class="chart-card">
+
+      <ngx-charts-force-directed-graph
+        [view]="view"
+        [legend]="showLegend"
+        [legendTitle]="legendTitle"
+        [scheme]="colorScheme"
+      >
+
+      </ngx-charts-force-directed-graph>
+
+
+      <!--[view]="view"-->
+      <!--[scheme]="colorScheme"-->
+      <!--[results]="multi"-->
+      <!--[gradient]="gradient"-->
+      <!--[xAxis]="showXAxis"-->
+      <!--[yAxis]="showYAxis"-->
+      <!--[legend]="showLegend"-->
+      <!--[showXAxisLabel]="showXAxisLabel"-->
+      <!--[showYAxisLabel]="showYAxisLabel"-->
+      <!--[xAxisLabel]="xAxisLabel"-->
+      <!--[yAxisLabel]="yAxisLabel"-->
+      <!--[autoScale]="autoScale"-->
+      <!--(select)="onSelect($event)">-->
+
+
+
+
+      <!--<ngx-charts-linear-gauge-->
+      <!--[view]="view"-->
+      <!--[scheme]="colorScheme"-->
+      <!--[value]="daysLived"-->
+      <!--[previousValue]="today"-->
+      <!--[min]="0"-->
+      <!--[max]="lifeSpanInDays"-->
+      <!--[units]="units"-->
+      <!--&gt;-->
+      <!--</ngx-charts-linear-gauge>-->
+
+
+    </md-card>
+
+  </div>
+</div>
