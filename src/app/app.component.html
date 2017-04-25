@@ -8,6 +8,22 @@
 
     <md-card class="input-card">
 
+      <md-card-actions>
+        <button md-raised-button (click)="handleClick_randomize()">Randomize.</button>
+      </md-card-actions>
+
+      <md-input-container>
+        <input mdInput name="addressInput"
+               placeholder="coreAddress" maxlength="11"
+               [(ngModel)]="coreAddress"/>
+      </md-input-container>
+
+      <md-input-container>
+        <input mdInput name="limitInput"
+               placeholder="limit" maxlength="3" type="number"
+               [(ngModel)]="limit"/>
+      </md-input-container>
+
       <md-input-container>
         <input mdInput name="depthInput"
                placeholder="depth" maxlength="2" type="number"
