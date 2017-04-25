@@ -6,26 +6,22 @@ import {Component} from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  depth;
+  coreAddress: String = '100.100.100';
+  depth: Number = 5;
+  limit: Number = 25;
 
   // chart vars
   view: any;
   colorScheme = {
-    domain: ['#666666', '#777777', '#888888', '#999999', '#aaaaaa', '#bbbbbb']
+    domain: ['#222222', '#333333', '#444444', '#555555', '#666666', '#777777']
   };
   showLegend = false;
   legendTitle = 'dummy data';
 
   nodes: any = [
-    {
-      "value": "111.222.111"
-    },
-    {
-      "value": "122.211.122"
-    },
-    {
-      "value": "133.133.133"
-    }
+    {'value': '111.222.111'},
+    {'value': '122.211.122'},
+    {'value': '133.133.133'}
   ];
 
   links: any = [{
@@ -35,10 +31,15 @@ export class AppComponent {
   constructor() {
   }
 
+  handleClick_randomize(): void {
+
+    // create a random address
+    this.coreAddress = Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255);
+
+  }
 
   handleClick_getData(): void {
     console.log('clicked');
-
   }
 
 }
