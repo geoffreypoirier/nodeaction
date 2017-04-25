@@ -7,7 +7,7 @@ import {NodeDataService} from './node-data.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  coreAddress: String = '100.100.100';
+  coreAddress: String = '107.100.76';
   depth: Number = 5;
   limit: Number = 25;
 
@@ -42,6 +42,7 @@ export class AppComponent {
 
     this.nodeData.getNodes(req).subscribe(result => {
 
+      console.log('result from server:', result);
 
       this.nodes = [{'value': '111.222.111'},
         {'value': '122.211.122'},
