@@ -29,6 +29,7 @@
   margin: 0;
   flex-grow: 0;
   background: #eeeef4;
+  width: 200px;
 }
 
 .chart-card {
