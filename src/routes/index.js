@@ -3,7 +3,7 @@
  */
 
 let express = require('express');
-let router = express.Router();
+let router  = express.Router();
 
 // ship something back to show it works
 router.get('/', (req, res, next) => {
@@ -11,8 +11,12 @@ router.get('/', (req, res, next) => {
 });
 
 
-router.get('/nodes', (req, res, next)=>{
-  res.send('Nodes api hit.')
+router.get('/nodes', (req, res, next) => {
+
+  let dummy = [{value: '50.50.50', links: ['none']}];
+
+  res.send(dummy);
+
 });
 
 
