@@ -9,7 +9,7 @@ export class AppComponent {
   depth;
 
   // chart vars
-  view: any;  // = [];
+  view: any;
   colorScheme = {
     domain: ['#666666', '#777777', '#888888', '#999999', '#aaaaaa', '#bbbbbb']
   };
