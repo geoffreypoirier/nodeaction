@@ -10,6 +10,7 @@ import {MdSidenavModule} from '@angular/material';
 import {MdToolbarModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
+import {NodeDataService} from './node-data.service';
 
 import { AppComponent } from './app.component';
 
@@ -30,7 +31,7 @@ import { AppComponent } from './app.component';
     BrowserAnimationsModule,
     NgxChartsModule
   ],
-  providers: [],
+  providers: [NodeDataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
