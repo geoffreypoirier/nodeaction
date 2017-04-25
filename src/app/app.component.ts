@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {NodeDataService} from "./node-data.service";
 
 @Component({
   selector: 'app-root',
@@ -18,17 +19,44 @@ export class AppComponent {
   showLegend = false;
   legendTitle = 'dummy data';
 
-  nodes: any = [
-    {'value': '111.222.111'},
-    {'value': '122.211.122'},
-    {'value': '133.133.133'}
-  ];
+  nodes: any = [];
 
-  links: any = [{
-    source: '111.222.111', target: '122.211.122'
-  }];
+  links: any = [];
 
-  constructor() {
+  constructor(private nodeData: NodeDataService) {
+    // Observe `updateString$` for change announcements.
+    nodeData.updateString$.subscribe(
+      res => this.updateData()
+    );
+
+    this.updateData();
+  }
+
+  updateData(): void {
+
+    const req = {
+      coreAddress: this.coreAddress,
+      depth: this.depth,
+      limit: this.limit
+    };
+
+    this.nodeData.getNodes(req).subscribe(result => {
+
+
+      this.nodes = [{'value': '111.222.111'},
+        {'value': '122.211.122'},
+        {'value': '133.133.133'}
+      ];
+
+      this.links = [{
+        source: '111.222.111', target: '122.211.122'
+      }];
+
+
+      // this.nodes = result.nodeValues;
+      // this.links = result.nodeLinks;
+
+    });
   }
 
   handleClick_randomize(): void {
@@ -39,7 +67,7 @@ export class AppComponent {
   }
 
   handleClick_getData(): void {
-    console.log('clicked');
+    this.updateData();
   }
 
 }
