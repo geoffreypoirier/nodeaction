@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +6,20 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app works!';
+  depth;
+
+  // chart vars
+  view: any;  // = [];
+  colorScheme = {
+    domain: ['#666666', '#777777', '#888888', '#999999', '#aaaaaa', '#bbbbbb']
+  };
+  showLegend = false;
+  legendTitle = 'dummy data';
+
+
+  handleClick_getData(): void {
+    console.log('clicked');
+
+  }
+
 }
