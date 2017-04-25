@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NodeDataService} from "./node-data.service";
+import {NodeDataService} from './node-data.service';
 
 @Component({
   selector: 'app-root',
