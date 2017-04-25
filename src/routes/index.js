@@ -10,4 +10,10 @@ router.get('/', (req, res, next) => {
   res.send('Express working.')
 });
 
+
+router.get('/nodes', (req, res, next)=>{
+  res.send('Nodes api hit.')
+});
+
+
 module.exports = router;
