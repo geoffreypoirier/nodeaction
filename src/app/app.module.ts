@@ -5,7 +5,11 @@ import { HttpModule } from '@angular/http';
 import {MdButtonModule} from '@angular/material';
 import {MdCardModule} from '@angular/material';
 import {MdIconModule} from '@angular/material';
+import {MdInputModule} from '@angular/material';
+import {MdSidenavModule} from '@angular/material';
+import {MdToolbarModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
 
 import { AppComponent } from './app.component';
 
@@ -20,7 +24,11 @@ import { AppComponent } from './app.component';
     MdButtonModule,
     MdCardModule,
     MdIconModule,
-    BrowserAnimationsModule
+    MdInputModule,
+    MdSidenavModule,
+    MdToolbarModule,
+    BrowserAnimationsModule,
+    NgxChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
