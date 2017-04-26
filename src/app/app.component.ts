@@ -8,8 +8,7 @@ import {NodeDataService} from './node-data.service';
 })
 export class AppComponent {
   coreAddress: String = '107.100.76';
-  depth: Number = 5;
-  limit: Number = 25;
+  depth: Number = 4;
 
   // chart vars
   view: any;
@@ -37,21 +36,22 @@ export class AppComponent {
     const req = {
       coreAddress: this.coreAddress,
       depth: this.depth,
-      limit: this.limit
     };
 
     this.nodeData.getNodes(req).subscribe(result => {
 
-      console.log('result from server:', result);
+      console.log('result:', result);
 
-      this.nodes = [{'value': '111.222.111'},
-        {'value': '122.211.122'},
-        {'value': '133.133.133'}
-      ];
+      const nodes = [];
 
-      this.links = [{
-        source: '111.222.111', target: '122.211.122'
-      }];
+      for (let resultCounter = 0; resultCounter < result.length; resultCounter++) {
+        nodes.push({value: result[resultCounter].value });
+      }
+
+
+      this.nodes = nodes;
+
+      this.links = [];
 
 
       // this.nodes = result.nodeValues;
