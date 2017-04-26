@@ -40,30 +40,32 @@ export class AppComponent {
 
     this.nodeData.getNodes(req).subscribe(result => {
 
-      console.log('result:', result);
-
       const nodes = [];
+      const links = [];
 
       for (let resultCounter = 0; resultCounter < result.length; resultCounter++) {
-        nodes.push({value: result[resultCounter].value });
+        const node = result[resultCounter];
+
+
+        nodes.push({value: node.value});
+
+        // if a link, add it
+        if (node.parent !== '') {
+          links.push({source: node.value, target: node.parent});
+        }
+
       }
 
-
       this.nodes = nodes;
-
-      this.links = [];
-
-
-      // this.nodes = result.nodeValues;
-      // this.links = result.nodeLinks;
+      this.links = links;
 
     });
   }
 
   handleClick_randomize(): void {
 
-    // create a random address
-    this.coreAddress = Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255);
+    // grab an address from nodes and use as root
+    this.coreAddress = this.nodes[Math.floor(Math.random() * this.nodes.length)].value;
 
   }
 
