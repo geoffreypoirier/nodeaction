@@ -2,6 +2,7 @@ export class Node {
 
   value: string;
 
-  links: string[];
+  parent: string;
+
 
 }
