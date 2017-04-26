@@ -22,7 +22,6 @@ let driver = neo4j.driver('bolt://localhost/', neo4j.auth.basic(un, pw));
 
 driver.onCompleted = function () {
   console.log('Driver working.');
-  console.log('Randomly adding and removing nodes.');
 };
 
 driver.onError = function (error) {
