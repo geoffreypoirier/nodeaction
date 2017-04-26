@@ -76,7 +76,7 @@ router.post('/nodes', (req, res, next) => {
 
       // each record is a path based on `depth`
 
-      // unroll the data: organize nodes and links
+      // unroll the data: organize nodes and parent
 
       let records = result.records;
 
@@ -90,7 +90,8 @@ router.post('/nodes', (req, res, next) => {
         for (let fieldsCounter = 0; fieldsCounter < fields.length; fieldsCounter++) {
           let address = fields[fieldsCounter].properties.address;
 
-          let n = {value: address, links: []};
+
+          let n = {value: address, parent: ''};
 
           // ?lodash isn't working for me here?
 
@@ -108,50 +109,14 @@ router.post('/nodes', (req, res, next) => {
 
           let nodeIndex = _findIndex(n.value);
 
-          // if unique, add it
-          nodeIndex === -1 ? nodes.push(n) : null;
-
 
           // get parent data if not root of the graph path (?phrasing?)
-          if ((fieldsCounter > 0) && ( nodeIndex > -1)) {
-
-            let parentIndex   = _findIndex(fields[fieldsCounter - 1].properties.address);
-            let parentAddress = fields[fieldsCounter - 1].properties.address;
-
-
-            // ?again, would prefer lodash which didn't work?
-
-
-            // if link unique, add it
-
-            let _findParentLinkIndex = function (_parentAddress) {
-
-              let _result = -1;
-
-              for (let linksCounter = 0; linksCounter < nodes[nodeIndex].links.length; linksCounter++) {
-                let link = nodes[nodeIndex].links[linksCounter];
-
-                //console.log('link:', link);
-                //console.log('_parentAddress:', _parentAddress);
-
-                if (link === _parentAddress) {
-                  _result = linksCounter;
-                  break;
-                }
-              }
-
-              return _result;
-            };
-
-
-            if (_findParentLinkIndex(parentAddress) === -1) {
-
-              nodes[nodeIndex].links.push(parentAddress);
-
-            }
-
+          if (fieldsCounter > 0) {
+            n.parent = fields[fieldsCounter - 1].properties.address;
           }
 
+          // if unique, add it
+          nodeIndex === -1 ? nodes.push(n) : null;
 
         }
 
