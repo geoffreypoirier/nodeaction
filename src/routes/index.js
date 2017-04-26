@@ -86,10 +86,6 @@ router.post('/nodes', (req, res, next) => {
 
         let fields = records[recordCounter]._fields;
 
-        console.log('\n ---');
-        console.log('records.length:', records.length);
-        console.log('nodes.length:', nodes.length);
-
 
         for (let fieldsCounter = 0; fieldsCounter < fields.length; fieldsCounter++) {
           let address = fields[fieldsCounter].properties.address;
@@ -135,9 +131,8 @@ router.post('/nodes', (req, res, next) => {
               for (let linksCounter = 0; linksCounter < nodes[nodeIndex].links.length; linksCounter++) {
                 let link = nodes[nodeIndex].links[linksCounter];
 
-                console.log('link:', link);
-                console.log('_parentAddress:', _parentAddress);
-
+                //console.log('link:', link);
+                //console.log('_parentAddress:', _parentAddress);
 
                 if (link === _parentAddress) {
                   _result = linksCounter;
