@@ -2,7 +2,9 @@
  * Created by geoffrey on 4/21/17.
  */
 
-let _       = require('lodash');
+// lodash not working
+//let _       = require('lodash');
+
 let express = require('express');
 let router  = express.Router();
 
@@ -78,7 +80,7 @@ router.post('/nodes', (req, res, next) => {
 
       let records = result.records;
 
-      let _nodes = [];
+      let nodes = [];
 
       for (let recordCounter = 0; recordCounter < records.length; recordCounter++) {
 
@@ -86,7 +88,7 @@ router.post('/nodes', (req, res, next) => {
 
         console.log('\n ---');
         console.log('records.length:', records.length);
-        console.log('_nodes.length:', _nodes.length);
+        console.log('nodes.length:', nodes.length);
 
 
         for (let fieldsCounter = 0; fieldsCounter < fields.length; fieldsCounter++) {
@@ -94,34 +96,64 @@ router.post('/nodes', (req, res, next) => {
 
           let n = {value: address, links: []};
 
-          let dupe = _.includes(_nodes, n.value);
-          let _i = _.indexOf(_nodes["value"], n.value);
+          // ?lodash isn't working for me here?
 
-          console.log('n.value:', n.value);
+          let _findIndex = function (_value) {
+            let _result = -1;
+            for (let nodesCounter = 0; nodesCounter < nodes.length; nodesCounter++) {
+              let node = nodes[nodesCounter];
+              if (node.value === _value) {
+                _result = nodesCounter;
+                break;
+              }
+            }
+            return _result;
+          };
 
-          if (_nodes.length > 0) {
+          let nodeIndex = _findIndex(n.value);
 
-            console.log('_nodes[0].value:', _nodes[0].value);
-          }
-
-          console.log('dupe:', dupe);
-          console.log('_i:', _i);
-
-
-
-          // if no node exists in nodes, add it
-          if (dupe) {
-
-            console.log('dupe:', n);
-
-
-          } else {
+          // if unique, add it
+          nodeIndex === -1 ? nodes.push(n) : null;
 
 
-            console.log('original:', n);
+          // get parent data if not root of the graph path (?phrasing?)
+          if ((fieldsCounter > 0) && ( nodeIndex > -1)) {
 
-            _nodes.push(n);
+            let parentIndex   = _findIndex(fields[fieldsCounter - 1].properties.address);
+            let parentAddress = fields[fieldsCounter - 1].properties.address;
 
+
+            // ?again, would prefer lodash which didn't work?
+
+
+            // if link unique, add it
+
+            let _findParentLinkIndex = function (_parentAddress) {
+
+              let _result = -1;
+
+              for (let linksCounter = 0; linksCounter < nodes[nodeIndex].links.length; linksCounter++) {
+                let link = nodes[nodeIndex].links[linksCounter];
+
+                console.log('link:', link);
+                console.log('_parentAddress:', _parentAddress);
+
+
+                if (link === _parentAddress) {
+                  _result = linksCounter;
+                  break;
+                }
+              }
+
+              return _result;
+            };
+
+
+            if (_findParentLinkIndex(parentAddress) === -1) {
+
+              nodes[nodeIndex].links.push(parentAddress);
+
+            }
 
           }
 
@@ -130,12 +162,9 @@ router.post('/nodes', (req, res, next) => {
 
       }
 
-      console.log('_nodes.length:', _nodes.length);
+      console.log('nodes.length:', nodes.length);
 
-
-      console.log(_nodes);
-
-      res.send(JSON.stringify(_nodes));
+      res.send(JSON.stringify(nodes));
 
       session.close();
 
