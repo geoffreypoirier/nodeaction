@@ -2,6 +2,7 @@
  * Created by geoffrey on 4/21/17.
  */
 
+let _       = require('lodash');
 let express = require('express');
 let router  = express.Router();
 
@@ -34,7 +35,7 @@ driver.onError = function (error) {
 // MATCH (source:Address { address:"107.100.76"})-[:CONNECTS_TO]->(target1:Address)-[:CONNECTS_TO]->(target2:Address)
 // RETURN source, target1, target2
 
-let genQueryString_getNode = function (_address, _depth, _limit) {
+let genQueryString_getNode = function (_address, _depth) {
 
   let qs = 'MATCH (source:Address { address:"' + _address + '"})';
 
@@ -53,48 +54,6 @@ let genQueryString_getNode = function (_address, _depth, _limit) {
 };
 
 
-let getNodes = function (body) {
-  let session = driver.session();
-
-  session
-
-  // get random nodes
-    .run(genQueryString_getNode(100, 5, 25))
-
-
-    //
-    .then((result) => {
-
-      let rawSeeds = [];
-
-      result.records.forEach(function (record) {
-        rawSeeds.push(record._fields[0].properties.address);
-      });
-
-      return generateSeeds(rawSeeds);
-
-    })
-
-    // add new seeds to db
-    .then((_seeds) => {
-      return session.run(genQueryString_addNodes(), {_seeds})
-    })
-
-
-    .then((result) => {
-      console.log(result);
-
-      session.close();
-
-    })
-
-
-    .catch((error) => {
-      console.log('error:', error);
-    })
-};
-
-
 // ship something back to show it works
 router.get('/', (req, res, next) => {
   res.send('Express working.')
@@ -108,14 +67,75 @@ router.post('/nodes', (req, res, next) => {
   session
 
   // get random nodes
-    .run(genQueryString_getNode(req.body.coreAddress, req.body.depth, req.body.limit))
+    .run(genQueryString_getNode(req.body.coreAddress, req.body.depth))
 
 
     .then((result) => {
 
-      console.log(result);
+      // each record is a path based on `depth`
 
-      res.send(result);
+      // unroll the data: organize nodes and links
+
+      let records = result.records;
+
+      let _nodes = [];
+
+      for (let recordCounter = 0; recordCounter < records.length; recordCounter++) {
+
+        let fields = records[recordCounter]._fields;
+
+        console.log('\n ---');
+        console.log('records.length:', records.length);
+        console.log('_nodes.length:', _nodes.length);
+
+
+        for (let fieldsCounter = 0; fieldsCounter < fields.length; fieldsCounter++) {
+          let address = fields[fieldsCounter].properties.address;
+
+          let n = {value: address, links: []};
+
+          let dupe = _.includes(_nodes, n.value);
+          let _i = _.indexOf(_nodes["value"], n.value);
+
+          console.log('n.value:', n.value);
+
+          if (_nodes.length > 0) {
+
+            console.log('_nodes[0].value:', _nodes[0].value);
+          }
+
+          console.log('dupe:', dupe);
+          console.log('_i:', _i);
+
+
+
+          // if no node exists in nodes, add it
+          if (dupe) {
+
+            console.log('dupe:', n);
+
+
+          } else {
+
+
+            console.log('original:', n);
+
+            _nodes.push(n);
+
+
+          }
+
+
+        }
+
+      }
+
+      console.log('_nodes.length:', _nodes.length);
+
+
+      console.log(_nodes);
+
+      res.send(JSON.stringify(_nodes));
 
       session.close();
 
