@@ -7,7 +7,7 @@ import {NodeDataService} from './node-data.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  coreAddress: String = '107.100.76';
+  address: String = '107.100.76';
   depth: Number = 4;
 
   // chart vars
@@ -34,7 +34,7 @@ export class AppComponent {
   updateData(): void {
 
     const req = {
-      coreAddress: this.coreAddress,
+      address: this.address,
       depth: this.depth,
     };
 
@@ -65,7 +65,7 @@ export class AppComponent {
   handleClick_randomize(): void {
 
     // grab an address from nodes and use as root
-    this.coreAddress = this.nodes[Math.floor(Math.random() * this.nodes.length)].value;
+    this.address = this.nodes[Math.floor(Math.random() * this.nodes.length)].value;
 
   }
 
