@@ -21,7 +21,7 @@ export class NodeDataService {
   }
 
   getNodes(req): Observable<Node[]> {
-    return this.http.post(this.SERVER_URL, req)
+    return this.http.get(this.SERVER_URL + '?address=' + req.address + '&depth=' + req.depth)
       .map((res) => res.json())
       .catch((error: any) => Observable.throw('error:', error));
   }
