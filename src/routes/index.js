@@ -61,14 +61,13 @@ router.get('/', (req, res, next) => {
 });
 
 
-router.post('/nodes', (req, res, next) => {
-
+router.get('/nodes', (req, res, next) => {
   let session = driver.session();
 
   session
 
-  // get random nodes
-    .run(genQueryString_getNode(req.body.coreAddress, req.body.depth))
+  // get nodes
+    .run(genQueryString_getNode(req.query.address, req.query.depth))
 
 
     .then((result) => {
@@ -132,8 +131,6 @@ router.post('/nodes', (req, res, next) => {
     .catch((error) => {
       console.log('error:', error);
     })
-
-
 });
 
 
